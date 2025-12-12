@@ -1,55 +1,49 @@
-window.alert("Adivina el número del 1 al 10. Tienes 3 intentos.");
+window.alert("Ingresa los valores para a, b y c.");
 
-const numeroSecreto = Math.floor(Math.random() * 10) + 1; 
+const a = parseFloat(prompt("Valor a:"));
+const b = parseFloat(prompt("Valor b:"));
+const c = parseFloat(prompt("Valor c:"));
 
-const intentosAnteriores = []; 
-let adivinado = false;
+let resultado = disc(a, b, c);
 
-function revisarIntento(intentosAnteriores, numero) {
-    if (intentosAnteriores.includes(numero)) {
-        window.alert(`Ya has intentado el número ${numero}. Elige uno diferente.`);
-        return false;
-    }
-    intentosAnteriores.push(numero);
-    return true;
+function disc(a, b, c) {
+  let discriminante = b * b - 4 * a * c;
+
+  if (discriminante < 0) {
+    return { 
+      mensaje: "La ecuación no tiene soluciones reales.", 
+      soluciones: [] 
+    };
+  } else if (discriminante === 0) {
+    let solucion = -b / (2 * a);
+    
+    return { 
+      mensaje: "Hay una única solución:", 
+      soluciones: [solucion] 
+    };
+
+  } else {
+    let solucion1 = (-b + Math.sqrt(discriminante)) / (2 * a);
+    let solucion2 = (-b - Math.sqrt(discriminante)) / (2 * a); 
+    
+    return { 
+      mensaje: "Hay dos soluciones:", 
+      soluciones: [solucion1, solucion2] 
+    };
+  }
 }
 
-for (let i = 0; i < 3; i++) {
-    let entradaValida = false; 
-    let num;
-    let contador = i + 1;
+const resultadoElemento = document.getElementById("resultado");
 
-    while (!entradaValida) {
-        num = parseFloat(prompt("Intento número " + contador + ":"));
-        if (isNaN(num) || num < 1 || num > 10) {
-            window.alert("Entrada inválida. Ingresa un número entre 1 y 10.");
-        } else {
-            entradaValida = true;
-        }
-    }
+if (resultadoElemento) {
+  let textoFinal = resultado.mensaje;
 
-    if (revisarIntento(intentosAnteriores, num)) {
-        
-        if (num === numeroSecreto) {
-            window.alert(`¡Has acertado! El número era ${numeroSecreto}.`);
-            console.log("¡Ganaste!");
-            adivinado = true;
-            break;
-        } else {
-            window.alert(`No has acertado. Es tu intento número ${contador}.`);
-            if (num > numeroSecreto) {
-                 console.log("Pista: El número secreto es MENOR.");
-            } else {
-                 console.log("Pista: El número secreto es MAYOR.");
-            }
-        }
-    } else {
-        i--;
-    }
-}
+  if (resultado.soluciones.length > 0) {
+    textoFinal += " " + resultado.soluciones.join(" y ");
+  }
 
-if (!adivinado) {
-    console.log("Se acabaron los intentos.");
-    console.log(`El número secreto era: ${numeroSecreto}`);
-    window.alert(`Se acabaron los intentos. El número era ${numeroSecreto}.`);
+  resultadoElemento.innerHTML = textoFinal;
+} else {
+    console.log("No se encontró el elemento con id='resultado' en el HTML.");
+    alert(`Resultado del cálculo: ${resultado.mensaje}. Soluciones: ${resultado.soluciones.join(' y ')}`);
 }
